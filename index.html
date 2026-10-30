@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elyx in AR</title>
+  <meta name="description" content="See the Elyx autonomous vehicle life-size in your space. No app needed.">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <style>
+    :root {
+      --background: #0c0f14;
+      --surface: #161b22;
+      --text: #e8ecf1;
+      --muted: #8b95a3;
+      --accent-from: #3fa9f5;
+      --accent-to: #ff9a5a;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      background: var(--background);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+    header { padding: 20px 16px 0; text-align: center; }
+    h1 { margin: 0; font-size: 1.6rem; letter-spacing: 0.02em; }
+    .subtitle { margin: 4px 0 0; color: var(--muted); font-size: 0.95rem; }
+    main { flex: 1; display: flex; min-height: 0; }
+    model-viewer {
+      flex: 1;
+      width: 100%;
+      min-height: 60vh;
+      --poster-color: transparent;
+    }
+    .ar-button {
+      position: absolute;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 24px;
+      font: 600 1rem system-ui, sans-serif;
+      color: #0c0f14;
+      background: linear-gradient(90deg, var(--accent-from), var(--accent-to));
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .dimensions {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    .qr-card {
+      display: none;
+      align-self: center;
+      margin: 16px;
+      padding: 20px;
+      width: 260px;
+      border-radius: 16px;
+      background: var(--surface);
+      text-align: center;
+    }
+    .qr-card.visible { display: block; }
+    .qr-card .qr { background: #fff; border-radius: 8px; padding: 8px; }
+    .qr-card .qr svg { display: block; width: 100%; height: auto; }
+    .qr-card p { margin: 12px 0 0; color: var(--muted); font-size: 0.9rem; line-height: 1.4; }
+    .qr-card strong { color: var(--text); }
+    @media (max-width: 720px) {
+      main { flex-direction: column; }
+      .qr-card { width: auto; max-width: 280px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Elyx</h1>
+    <p class="subtitle">ElysiumX autonomous vehicle</p>
+  </header>
+  <main>
+    <model-viewer id="viewer"
+                  src="elyx.glb"
+                  alt="3D model of the Elyx autonomous vehicle"
+                  ar
+                  ar-modes="webxr scene-viewer quick-look"
+                  ar-scale="fixed"
+                  ar-placement="floor"
+                  camera-controls
+                  auto-rotate
+                  camera-orbit="35deg 75deg auto"
+                  shadow-intensity="1"
+                  environment-image="neutral"
+                  touch-action="pan-y">
+      <span class="dimensions" id="dimensions"></span>
+      <button slot="ar-button" class="ar-button">View life-size in your space</button>
+    </model-viewer>
+    <aside class="qr-card" id="qr-card">
+      <div class="qr" id="qr"></div>
+      <p><strong>Scan with your phone</strong><br>to see Elyx life-size on the floor. No app needed.</p>
+    </aside>
+  </main>
+  <script>
+    const viewer = document.getElementById('viewer');
+    const siteUrl = new URL('./', window.location.href).href;
+
+    const qr = qrcode(0, 'M');
+    qr.addData(siteUrl);
+    qr.make();
+    document.getElementById('qr').innerHTML = qr.createSvgTag({ margin: 2, scalable: true });
+
+    viewer.addEventListener('load', () => {
+      const size = viewer.getDimensions();
+      document.getElementById('dimensions').textContent =
+        `${size.z.toFixed(2)} m long · ${size.x.toFixed(2)} m wide · ${size.y.toFixed(2)} m tall`;
+      if (!viewer.canActivateAR) {
+        document.getElementById('qr-card').classList.add('visible');
+      }
+    });
+  </script>
+</body>
+</html>

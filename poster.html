@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elyx AR Poster</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <style>
+    @page { size: A4 portrait; margin: 15mm; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #fff;
+      color: #0c0f14;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      text-align: center;
+    }
+    .sheet { max-width: 180mm; margin: 0 auto; padding: 8mm 0; }
+    h1 { margin: 0; font-size: 34pt; }
+    .lead { margin: 4mm 0 8mm; font-size: 16pt; }
+    .qr { width: 160mm; max-width: 100%; margin: 0 auto; }
+    .qr svg { display: block; width: 100%; height: auto; }
+    ol {
+      display: inline-block;
+      margin: 8mm 0 0;
+      padding-left: 6mm;
+      text-align: left;
+      font-size: 14pt;
+      line-height: 1.6;
+    }
+    .print-hint { margin-top: 8mm; color: #8b95a3; font-size: 10pt; }
+    @media print { .print-hint { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <h1>See Elyx life-size</h1>
+    <p class="lead">Point your phone camera at the code. No app needed.</p>
+    <div class="qr" id="qr"></div>
+    <ol>
+      <li>Scan the code and open the link</li>
+      <li>Tap <strong>View life-size in your space</strong></li>
+      <li>Aim at the floor and move your phone slowly</li>
+    </ol>
+    <p class="print-hint">Print at 100% scale (no "fit to page") so the code stays about 16 cm wide.</p>
+  </div>
+  <script>
+    const siteUrl = new URL('./', window.location.href).href;
+    const qr = qrcode(0, 'M');
+    qr.addData(siteUrl);
+    qr.make();
+    document.getElementById('qr').innerHTML = qr.createSvgTag({ margin: 2, scalable: true });
+  </script>
+</body>
+</html>
