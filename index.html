@@ -7,6 +7,7 @@
   <meta name="description" content="See the Elyx autonomous vehicle life-size in your space. No app needed.">
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <script src="qr-code.js"></script>
   <style>
     :root {
       --background: #0c0f14;
@@ -111,10 +112,10 @@
     const viewer = document.getElementById('viewer');
     const siteUrl = new URL('./', window.location.href).href;
 
-    const qr = qrcode(0, 'M');
-    qr.addData(siteUrl);
-    qr.make();
-    document.getElementById('qr').innerHTML = qr.createSvgTag({ margin: 2, scalable: true });
+    const qrCodeSize = 1000;
+    document.getElementById('qr').innerHTML =
+      `<svg viewBox="0 0 ${qrCodeSize} ${qrCodeSize}" xmlns="http://www.w3.org/2000/svg">` +
+      `${createQrCodeWithLogoMarkup(siteUrl, qrCodeSize)}</svg>`;
 
     viewer.addEventListener('load', () => {
       const size = viewer.getDimensions();
